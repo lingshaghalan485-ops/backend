@@ -21,14 +21,14 @@
 // restructuring module
 // built in modules
 // fs
-import fs from "fs";
+import fs from "fs";//inbuilt modules
 import os from "os";
 import path from"path";
-fs.writeFileSync("same.txt","hello this is sample text");
+// fs.writeFileSync("same.txt","hello this is sample text");
 
 
-const data = fs.readFileSync("same.txt","utf-8");
-console.log(data)
+// const data = fs.readFileSync("same.txt","utf-8");
+// console.log(data)
 
 console.log(os.platform());
 console.log(os.arch());
@@ -40,4 +40,27 @@ const filepath = "ram/docs/letter.txt";
 console.log("base Name",path.basename(filepath));
 console.log("Directory Name",path.dirname(filepath));
 console.log("File extension",path.extname(filepath));
+// fs.appendFile("same.txt","my name");
+// const data = fs.appendFile("same.txt","utf-8");
 
+// console.log(data)
+
+
+fs.appendFile("same.txt", "appende using appendfile\n", "utf-8", (err) => {
+  
+  console.log("err");
+});
+// delete file unlink le
+fs.unlink('same.txt',(err) => {
+  console.log(err);
+});
+
+// 
+// fs.mkdir("myfolder",(err) =>{
+//   console.log(err)
+// });
+// fs.mkdir("myfolder",()=>{
+
+// });
+
+// rest, spread
