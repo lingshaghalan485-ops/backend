@@ -11,13 +11,25 @@ let books = [
   },
 ];
 const createBook = (req, res) =>{
-    const{title,author}=req.body;
+  try{
+    const{title, author}= req.body;
+    if (!title || !author){
+      res.status(404).json({
+        message:"All fiels are required",
+      });
+    }
     const newBook = { id: books.length + 1, title, author};
     books.push(newBook);
     console.log(books)
     res.json(newBook);
+}catch (error){
+  res.status(500).json({
+    message:"Internal server error",
 
+  });
+}
 };
+
 const getBook = (req, res) =>{
     res.send (books);
 };
@@ -38,7 +50,8 @@ const {title, author} = req.body;
     book.title = title;
     book.author = author;
     console.log(book)
-    res.json(book) 
+    res.json(book);
+
 };
 const deleteBook = (req,res)=>{
 
@@ -47,3 +60,5 @@ const deleteBook = (req,res)=>{
     res.json({message:"book deleted"});
 };
 export {createBook,getBook,getBookById,updateBook,deleteBook};
+
+
