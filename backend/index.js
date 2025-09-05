@@ -3,6 +3,7 @@ import express from "express"
 import bookRoutes from "./routes/book.routes.js";
 import schoolRoutes from "./routes/school.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import {connectDB} from"./config/db.js";
 const app = express();
 connectDB()
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use("/books",bookRoutes);
 app.use("/schools",schoolRoutes);
 app.use("/users",userRoutes);
+app.use("/auth",authRoutes)
 
 //  middlewware 
 //  is like a bridge between the request 
@@ -22,7 +24,6 @@ app.use("/users",userRoutes);
 //     next();
 // }
 app.use("/books",bookRoutes);
-
 app.get('/',(req, res)=>{
     res.send("server is running");
 });

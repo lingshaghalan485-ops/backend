@@ -1,5 +1,6 @@
 
 import User from"../model/user.model.js";
+import bcrypt from "bcrypt";
 
 const createUser =async(req, res)=>{
     try{
@@ -10,14 +11,13 @@ const createUser =async(req, res)=>{
 
             });
 
-            
-
-            
+         const salt = await bcrypt.genSalt(10);
+         const hashedPassword = await bcrypt.hash (password, salt);
         }
         await User.create({
             name,
             email,
-            password,
+            password:hashedaPassword,
 
         });
         res.status(201).json({
@@ -32,4 +32,14 @@ const createUser =async(req, res)=>{
 
 
 };
-export{createUser};
+const getUser = (req, res) =>{
+    const user = users.find((b) => b.id === parseInt(req.params.id));
+  if (!user) {
+    return res.json({
+      message: "Book not found",
+    });
+  }
+    res.send (user);
+};
+
+export{createUser,getUser};
