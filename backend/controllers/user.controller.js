@@ -1,6 +1,6 @@
 
 import User from"../model/user.model.js";
-import bcrypt from "bcrypt";
+
 
 const createUser =async(req, res)=>{
     try{

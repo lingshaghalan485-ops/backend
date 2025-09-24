@@ -1,39 +1,37 @@
-import express from "express"
-
-import bookRoutes from "./routes/book.routes.js";
-import schoolRoutes from "./routes/school.routes.js";
-import userRoutes from "./routes/user.routes.js";
-import authRoutes from "./routes/auth.routes.js";
-import {connectDB} from"./config/db.js";
+import express from "express";
+import bookRoutes from "./routes/book.route.js";
+import userRoutes from "./routes/user.route.js";
+import authRoutes from "./routes/auth.route.js";
+import uploadRoutes from "./routes/upload.route.js";
+import borroRoutes from "./routes/borrow.route.js";
+import { connectDB } from "./config/db.js";
+import { config } from "./config/config.js";
+import morgan from "morgan";
+import cors from "cord";
 const app = express();
-connectDB()
+connectDB();
+app.use(
+    cors({
+        origin:config.CORS_ORIGIN
+    }))
+app.use(morgan("dev"));
 app.use(express.json());
-// app.use(logger);
-app.use("/books",bookRoutes);
-app.use("/schools",schoolRoutes);
-app.use("/users",userRoutes);
-app.use("/auth",authRoutes)
 
-//  middlewware 
-//  is like a bridge between the request 
-// coming from client 
+// middleware
+// is like a bridge between the request
+// coming from client and the response sent by server
 
+// function which has req res next
+app.use("/books", bookRoutes);
+app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
+app.use("/upload", uploadRoutes);
+app.use("/", borroRoutes);
 
-// function logger(req, res, next){
-//     console.log(`${req.method}  ${req.url}`);
-//     next();
-// }
-app.use("/books",bookRoutes);
-app.get('/',(req, res)=>{
-    res.send("server is running");
+app.get("/", (req, res) => {
+  res.send("Server is running");
 });
 
-app.get("/about",(req,res)=>{
-    res.send("This is about page");
+app.listen(config.PORT, () => {
+  console.log(`server is running on port ${config.PORT}`);
 });
-
-
-
-app.listen(8000, () => {
-    console.log("server is running on port 8000")
-})

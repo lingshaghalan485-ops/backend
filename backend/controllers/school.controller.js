@@ -28,7 +28,7 @@ const getSchool = (req, res) =>{
 
 const getSchoolById = (req,res)=>{
 
-const school = schools.find((s) => s.id === parseInt(req.params.id));
+const school = schools.find((s) => s.id === parseInt(req.params.schoolid));
   if (!school) {
     return res.json({
       message: "school not found",

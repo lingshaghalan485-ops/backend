@@ -1,64 +1,95 @@
-let books = [
-  {
-    id: 1,
-    title: "Book One",
-    author: "Author A",
-  },
-  {
-    id: 2,
-    title: "Book Two",
-    author: "Author B",
-  },
-];
-const createBook = (req, res) =>{
-  try{
-    const{title, author}= req.body;
-    if (!title || !author){
-      res.status(404).json({
-        message:"All fiels are required",
-      });
-    }
-    const newBook = { id: books.length + 1, title, author};
-    books.push(newBook);
-    console.log(books)
-    res.json(newBook);
-}catch (error){
-  res.status(500).json({
-    message:"Internal server error",
+import Book from "../model/book.model.js";
 
-  });
-}
-};
+// Create a new book (Admin only)
+export const createBook = async (req, res) => {
+  try {
+    const { title, image, author, description, copies } = req.body;
 
-const getBook = (req, res) =>{
-    res.send (books);
-};
-const getBookById = (req,res)=>{
-
-const book = books.find((b) => b.id === parseInt(req.params.id));
-  if (!book) {
-    return res.json({
-      message: "Book not found",
+    const book = new Book({
+      title,
+      image,
+      author,
+      description,
+      copies,
     });
+
+    await book.save();
+
+    res.status(201).json({
+      message: "Book created successfully",
+      book,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
-  res.json(book);
 };
-const updateBook = (req,res)=>{
 
-const {title, author} = req.body;
-    const book = books.find((b) =>b.id === parseInt(req.params.id));
-    book.title = title;
-    book.author = author;
-    console.log(book)
-    res.json(book);
-
+// Get all books
+export const getAllBooks = async (req, res) => {
+  try {
+    const books = await Book.find().populate("borrowedBy", "name email");
+    res.status(200).json({ books });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
-const deleteBook = (req,res)=>{
 
- books = books.filter((b) => b.id !== parseInt(req.params.id));
-    console.log(books)
-    res.json({message:"book deleted"});
+// Get single book by ID
+export const getBookById = async (req, res) => {
+  try {
+    const { bookId } = req.params;
+    const book = await Book.findById(bookId).populate("borrowedBy", "name email");
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    res.status(200).json({ book });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 };
-export {createBook,getBook,getBookById,updateBook,deleteBook};
 
+// Update book (Admin only)
+export const updateBook = async (req, res) => {
+  try {
+    const { bookId } = req.params;
+    const updates = req.body;
 
+    const book = await Book.findByIdAndUpdate(bookId, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    res.status(200).json({
+      message: "Book updated successfully",
+      book,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Delete book (Admin only)
+export const deleteBook = async (req, res) => {
+  try {
+    const { bookId } = req.params;
+
+    const book = await Book.findByIdAndDelete(bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    res.status(200).json({
+      message: "Book deleted successfully",
+      book,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
